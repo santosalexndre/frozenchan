@@ -1,0 +1,87 @@
+:root {
+    --bg-color: #F5F7DC;
+    --title-color: #B5D99C;
+    --fg-color: #062603;
+    --link-color: #E65F5C;
+    --border-color: #1a5a22;
+    --bg-color1: #f6f7f0;
+    --bg-color2: #B5D99C;
+    --card-bg: #f6f7f0;
+    --title-text-color: #1a5a22;
+}
+
+body {
+    margin: 0;
+    color: var(--fg-color);
+    background-color: var(--bg-color);
+}
+
+.front-page {
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    align-items: center;
+    gap: 1em;
+    margin-top:1em;
+}
+
+.front-page h1 {
+    margin: 0.1em;
+    font-size: 28px;
+    color: var(--title-text-color);
+}
+
+.front-logo {
+    height: 20em;
+    margin-top: 5em;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    width: 50em;
+    height: fit-content;
+    border: 1px solid var(--border-color);
+}
+
+.card-title {
+    height: fit-content;
+    padding: 3px 8px;
+    color: var(--title-text-color);
+    font-size: large;
+    font-weight: bold;
+    background-color: var(--title-color);
+}
+
+.card-content {
+    height: fit-content;
+    padding: 8px;
+    background-color: var(--card-bg);
+}
+
+.board-info {
+    width: 100%;
+    border-spacing: 0;
+}
+.board-info thead th {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.board-info th {
+    text-align: left;
+}
+.board-info td {
+    text-align: left;
+}
+.board-info tbody tr:nth-child(even) {
+    background-color: var(--bg-color1);
+}
+.board-info tbody tr:nth-child(odd) {
+    background-color: var(--bg-color2);
+}
+.flex-between {
+    display: flex;
+    justify-content: space-evenly;
+}

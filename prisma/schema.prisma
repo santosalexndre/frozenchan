@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Board {
+  dir            String   @id
+  shortName      String   @unique
+  name           String   @unique
+  posts          Int      @default(0)
+  pages          Int      @default(10)
+  threadsPerPage Int      @default(10)
+  postLimite     Int      @default(50)
+  archive        Boolean  @default(true)
+  Thread         Thread[]
+  Post           Post[]
+}
+
+model Thread {
+  id       Int     @id
+  board    Board   @relation(fields: [boardDir], references: [dir])
+  boardDir String
+  sticky   Boolean @default(false)
+  lock     Boolean @default(false)
+  archive  Boolean @default(false)
+  Post     Post[]
+}
+
+model Post {
+  id          Int      @id
+  postNumber  Int
+  thread      Thread   @relation(fields: [threadId], references: [id])
+  threadId    Int
+  board       Board    @relation(fields: [boardDir], references: [dir])
+  boardDir    String
+  timestamp   DateTime @default(now())
+  ip          String
+  comment     String?
+  name        String?
+  trip        String?
+  fileName    String?
+  filePath    String?
+  filemd5     String?
+  filesize    Int?
+  filewidth   Int?
+  filetype    Int?
+  fileheight  Int?
+  filespoiler Boolean  @default(false)
+}
