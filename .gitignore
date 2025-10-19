@@ -1,0 +1,7 @@
+.env
+node_modules/
+dist/
+TODO
+test.sh
+reqdata.json
+/src/generated/prisma

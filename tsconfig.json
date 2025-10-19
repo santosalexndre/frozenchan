@@ -1,0 +1,29 @@
+{
+    "compilerOptions": {
+        "lib": [
+            "es2024",
+            "ESNext.Array",
+            "ESNext.Collection",
+            "ESNext.Iterator",
+            "ESNext.Promise"
+        ],
+        "allowUnusedLabels": false,
+        "allowUnreachableCode": false,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitOverride": true,
+        "noImplicitReturns": true,
+        "noUncheckedIndexedAccess": true,
+        "isolatedModules": true,
+        "module": "nodenext",
+        "target": "es2024",
+        "noImplicitAny": true,
+        "alwaysStrict": true,
+        "strict": true,
+        "sourceMap": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "moduleResolution": "node16"
+    },
+    "outDir": "./dist",
+    "rootDir": "./src"
+}
