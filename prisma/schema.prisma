@@ -16,7 +16,6 @@ datasource db {
 
 model Board {
   dir            String   @id
-  shortName      String   @unique
   name           String   @unique
   posts          Int      @default(0)
   pages          Int      @default(10)
@@ -28,18 +27,20 @@ model Board {
 }
 
 model Thread {
-  id       Int     @id
-  board    Board   @relation(fields: [boardDir], references: [dir])
-  boardDir String
-  sticky   Boolean @default(false)
-  lock     Boolean @default(false)
-  archive  Boolean @default(false)
-  Post     Post[]
+  id        Int      @id @default(autoincrement())
+  board     Board    @relation(fields: [boardDir], references: [dir])
+  boardDir  String
+  subject   String
+  sticky    Boolean  @default(false)
+  lock      Boolean  @default(false)
+  archive   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Post      Post[]
 }
 
 model Post {
-  id          Int      @id
-  postNumber  Int
+  id          Int      @id @default(autoincrement())
   thread      Thread   @relation(fields: [threadId], references: [id])
   threadId    Int
   board       Board    @relation(fields: [boardDir], references: [dir])

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles/frozen-theme.css">
+    <title>Document</title>
+</head>
+<body>
+    <header class="boards">
+        [ <a href="/">index</a> ]
+        [ <a href="/g/">g</a> ]
+        [ <a href="/vg/">vg</a> ]
+        [ <a href="/cc/">cc</a> ] 
+        [ <a href="/neo/">neo</a> ] 
+    </header> 
+    <h1 class="board-title"> /<%= board.dir %>/ - <%= board.name %></h1>
+    <hr>
+    <div class="post-form">
+        <form action="/g/" method="post">
+            <div>
+                <label for="subject">Subject</label>
+                <input type="text" name="subject" id="">
+            </div>
+            <div>
+                <label for="name">Name</label>
+                <input type="text" name="name" id="">
+            </div>
+            <div>
+                <label for="comment">Comment</label>
+                <textarea name="comment" id="comment"></textarea>
+            </div>
+            <div>
+                <label for="comment">File (?)</label>
+                <input type="file" name="file" id="input-file">
+            </div>
+            <button type="submit">Submit Post</button>
+        </form>
+    </div>
+    <hr>
+    <div class="board-actions">
+        <input type="text" name="thread-search" id="thread-search" placeholder="Search OPs...">
+        [ <a href="/g/catalog">Catalog</a> ]
+        [ <a href="/g/catalog">Archive</a> ]
+    </div>
+    <hr>
+    <% for (let thread of threads) { %>
+    <% { let op = thread.Post[0] %>
+    <div class="thread-container">
+        <div class="op">
+            <% if (op.fileName) { %> 
+            <div class="post-image">
+                <div class="post-file">
+                    File: 
+                    <a href="resources/<%= op.fileName %>"><%= op.fileName %></a> (192x160, 16Kb)
+                </div>
+                <img src="/resources/<%= op.fileName %>" alt="op-image">
+            </div>
+            <% } %>
+            <div class="post-info">
+                <span class="post-subject"><%= thread.subject %></span>
+                <span class="post-name"><%= op.name || "Anão" %></span>
+                <span class="post-time">(<%= op.timestamp %>)</span>
+                <span class="post-number">No.<%= op.id %></span>
+                [ <span><a href="/<%=board.dir%>/<%=op.id%>/#">Reply</a></span> ]
+            </div>
+            <div class="post-comment"><%= op.comment %></div>
+        </div>
+        <% for (let i = 1; i < thread.Post.length; i++) { let comment = thread.Post[i]; %>
+        <div class="comment">
+            <div class="post-info">
+                <% if (thread.subject) %> <span class="post-subject"><%= thread.subject %></span>
+                <span class="post-name"><%= comment.name || "Anão" %></span>
+                <span class="post-time">(<%= comment.timestamp %>)</span>
+                <span class="post-number">No.<%= comment.id %></span>
+                [ <span><a href="/reply">Reply</a></span> ]
+            </div>
+            <% if (comment.file) { %>
+            <div class="post-image">
+                <div class="post-file">
+                    File:
+                    <a href="resources/teste.webp">teste.webp</a> (192x160, 16Kb)
+                </div>
+
+                <img src="resources/teste.webp" alt="op-image">
+            </div>
+            <% } %>
+            <div class="post-comment"><%= comment.comment %></div>
+        </div>
+        <% } %>
+    </div>
+    <% } %>
+    <hr>
+    <% } %>
+</body>
+</html>

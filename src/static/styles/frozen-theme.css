@@ -8,12 +8,20 @@
     --bg-color2: #B5D99C;
     --card-bg: #f6f7f0;
     --title-text-color: #1a5a22;
+    --hr-color: #1a5a22;
+    --name-color: #1a5a22;
+    --subject-color: #9cad00;
 }
 
+html {
+    min-height: 100%;
+}
 body {
-    margin: 0;
+    margin: 10px;
     color: var(--fg-color);
     background-color: var(--bg-color);
+    height: 100%;
+    background: linear-gradient(0deg, var(--bg-color2), var(--bg-color1));
 }
 
 .front-page {
@@ -84,4 +92,105 @@ body {
 .flex-between {
     display: flex;
     justify-content: space-evenly;
+}
+
+.boards {
+    text-align: center;
+}
+.board-title {
+    text-align: center;
+}
+
+.op {
+}
+
+hr {
+    border: none;
+    border-bottom: 1px solid var(--hr-color);
+}
+
+.thread-container {
+    margin: 10px 0px 0px 0px;
+    display: inline-block;
+    padding: 10px;
+}
+
+.post-name {
+    color: var(--name-color);
+    font-weight: bold;
+}
+
+.comment { 
+    display: table;
+    min-width: 300px;
+    max-width: 100%;
+    background-color: var(--bg-color2);
+    padding: 10px;
+    border: 1px solid var(--border-color);
+}
+
+.post-form {
+    min-width: 350px;
+    width: fit-content;
+    margin:auto;
+}
+.post-form form {
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+}
+
+.post-form form div {
+    display: flex;
+}
+
+.post-form form div  textarea {
+    min-height: 100px !important;
+}
+
+.post-form #input-file {
+    margin:auto;
+}
+.post-form form div input, textarea {
+    margin: 2px;
+    width: 100%;
+}
+
+.post-form form button {
+    width: fit-content;
+    margin:auto;
+    margin-top: 10px;
+}
+
+.post-form form div label {
+    min-width: 120px;
+    text-align: right;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-color2);
+    padding: 2px 8px;
+    margin: 2px;
+}
+.post-file {
+    margin: 0px 0px 3px 0px;
+}
+
+.post-comment {
+    padding: 10px 15px;
+}
+
+.post-info .post-subject {
+    color: var(--subject-color);
+    font-weight: bold;
+}
+
+.post-image {
+    float: left;
+    margin: 0px 20px 0px 10px;
+}
+.post-image img {
+    max-width: 15em;
+}
+
+.comment .post-image img {
+    max-width: 8em;
 }

@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "@prisma/client": "^6.17.1",
+    "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "ejs": "^3.1.10",
     "express": "^5.1.0"
@@ -9,6 +10,7 @@
     "@eslint/css": "^0.13.0",
     "@eslint/js": "^9.38.0",
     "@eslint/json": "^0.13.2",
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/node": "^24.8.1",
     "eslint": "^9.38.0",
