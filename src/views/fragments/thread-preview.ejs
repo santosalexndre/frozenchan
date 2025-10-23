@@ -1,0 +1,31 @@
+<% { let op = posts[0] %>
+<div class="thread-container">
+    <div class="op">
+        <% if (op.fileName) { %> 
+        <div class="post-file">
+            File: 
+            <a href="/<%=board.dir%>/<%= op.fileName %>.<%=op.filetype%>"><%= op.fileName %>.<%= op.filetype %></a> (<%= op.filewidth%>x<%=op.fileheight%>, 16Kb)
+        </div>
+        <div class="post-image">
+            <% if (op.filetype.startsWith('mp4')) { %>
+                <video src="/<%=board.dir%>/<%= op.fileName %>.<%=op.filetype%>" alt="op-image">
+            <% } else { %>
+                <img src="/<%=board.dir%>/<%= op.fileName %>.<%=op.filetype%>" alt="op-image">
+            <% } %>
+        </div>
+        <% } %>
+        <div class="post-info">
+            <span class="post-subject"><%= thread.subject %></span>
+            <span class="post-name"><%= op.name || "Anão" %></span>
+            <span class="post-time">(<%= op.timestamp %>)</span>
+            <span class="post-number">No.<%= op.id %></span>
+            [ <span><a href="/<%=board.dir%>/thread/<%=op.id%>/#">Reply</a></span> ]
+        </div>
+        <div class="post-comment"><%= op.comment %></div>
+    </div>
+    <% for (let i = 1; i < posts.length; i++) { let comment = posts[i]; %>
+        <%- include('comment', { comment }); %>
+    <% } %>
+</div>
+<hr>
+<% } %>

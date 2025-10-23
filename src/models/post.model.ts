@@ -1,10 +1,19 @@
 import { prisma } from '../infra/prisma';
 
+export interface UserImage {
+    width: number;
+    height: number;
+    ext: string;
+    name: string;
+    size: number;
+}
+
 export interface PostDTO {
     threadId: number;
     boardDir: string;
     comment: string;
     name?: string;
+    file?: UserImage;
 }
 export class Post {
     private constructor(
@@ -15,7 +24,7 @@ export class Post {
         public timestamp: Date,
         public ipAddress: string,
         public name?: string,
-        public fileName?: string,
+        public file?: UserImage,
     ) {}
 
     public static async get(id: number) {}
@@ -30,6 +39,14 @@ export class Post {
                     threadId: postDto.threadId,
                     name: postDto.name,
                     timestamp: new Date(),
+                    filewidth: postDto.file?.width,
+                    fileheight: postDto.file?.height,
+                    fileName: postDto.file?.name,
+                    filetype: postDto.file?.ext,
+                    filePath:
+                        'data/uploads/' +
+                        postDto.file?.name +
+                        (postDto.file?.ext || ''),
                 },
             });
             return post;

@@ -55,7 +55,7 @@ model Post {
   filemd5     String?
   filesize    Int?
   filewidth   Int?
-  filetype    Int?
+  filetype    String?
   fileheight  Int?
   filespoiler Boolean  @default(false)
 }

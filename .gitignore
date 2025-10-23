@@ -6,3 +6,4 @@ test.sh
 reqdata.json
 /src/generated/prisma
 /src/generated/prisma
+data/

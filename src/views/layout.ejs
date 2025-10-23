@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles/frozen-theme.css">
+    <title>Document</title>
+</head>
+<body>
+    <header class="boards">
+        [ <a href="/">index</a> ]
+        <% for(let board of boardList) { %>
+        [ <a href="/<%=board.dir%>/">/<%= board.dir %>/</a> ]
+        <% } %>
+    </header> 
+    <h1 class="board-title"> /<%= opts.board.dir %>/ - <%= opts.board.name %></h1>
+    <hr>
+    <div class="post-form">
+        <form action="/<%= opts.board.dir %>/<%= opts.threadId ? 'thread/'+opts.threadId : '' %>" method="post" enctype="multipart/form-data">
+            <% if (!opts.threadId) { %>
+            <div>
+                <label for="subject">Subject</label>
+                <input type="text" name="subject" id="">
+            </div>
+            <% } %>
+            <div>
+                <label for="name">Name</label>
+                <input type="text" name="name" id="">
+            </div>
+            <div>
+                <label for="comment">Comment</label>
+                <textarea name="comment" id="comment"></textarea>
+            </div>
+            <div>
+                <label for="comment">File (?)</label>
+                <input type="file" name="image" id="input-file">
+            </div>
+            <button type="submit">Submit Post</button>
+        </form>
+    </div>
+    <hr>
+    <%- include(page, opts); %>
+</body>
+</html>

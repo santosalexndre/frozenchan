@@ -21,7 +21,7 @@ body {
     color: var(--fg-color);
     background-color: var(--bg-color);
     height: 100%;
-    background: linear-gradient(0deg, var(--bg-color2), var(--bg-color1));
+    /* background: linear-gradient(0deg, var(--bg-color2), var(--bg-color1)); */
 }
 
 .front-page {
@@ -113,6 +113,7 @@ hr {
     margin: 10px 0px 0px 0px;
     display: inline-block;
     padding: 10px;
+    width: 100%;
 }
 
 .post-name {
@@ -187,8 +188,13 @@ hr {
     float: left;
     margin: 0px 20px 0px 10px;
 }
-.post-image img {
+.post-image img, video {
     max-width: 15em;
+    max-height: 20em;
+}
+
+.comment {
+    margin: 10px 0px;
 }
 
 .comment .post-image img {
