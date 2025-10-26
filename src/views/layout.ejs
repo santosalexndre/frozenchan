@@ -10,14 +10,14 @@
     <header class="boards">
         [ <a href="/">index</a> ]
         <% for(let board of boardList) { %>
-        [ <a href="/<%=board.dir%>/">/<%= board.dir %>/</a> ]
+        [ <a href="/<%=board%>/">/<%= board %>/</a> ]
         <% } %>
     </header> 
-    <h1 class="board-title"> /<%= opts.board.dir %>/ - <%= opts.board.name %></h1>
+    <h1 class="board-title"> /<%= directory %>/ - <%= boardName %></h1>
     <hr>
     <div class="post-form">
-        <form action="/<%= opts.board.dir %>/<%= opts.threadId ? 'thread/'+opts.threadId : '' %>" method="post" enctype="multipart/form-data">
-            <% if (!opts.threadId) { %>
+        <form action="/<%= directory %>/<%= opts.thread ? 'thread/' + opts.thread.id : '' %>" method="post" enctype="multipart/form-data">
+            <% if (!opts.thread) { %>
             <div>
                 <label for="subject">Subject</label>
                 <input type="text" name="subject" id="">
@@ -29,11 +29,11 @@
             </div>
             <div>
                 <label for="comment">Comment</label>
-                <textarea name="comment" id="comment"></textarea>
+                <textarea name="comment" id="comment" required></textarea>
             </div>
             <div>
                 <label for="comment">File (?)</label>
-                <input type="file" name="image" id="input-file">
+                <input type="file" name="image" id="input-file" <% if (!opts.thread) { %> required <% } %>>
             </div>
             <button type="submit">Submit Post</button>
         </form>
@@ -41,4 +41,21 @@
     <hr>
     <%- include(page, opts); %>
 </body>
+<script>
+    window.onload = () => {
+        const preview = document.getElementById("#image-preview");
+        preview.hidden = true;
+        window.imagePreview = preview;
+    }
+    function showPreview(el) {
+        let src = el.src.replace(/s(?=\.)/, "");
+        imagePreview.hidden = false;
+        imagePreview.src = src;
+    }
+
+    function hidePreview(el) {
+        if (!imagePreview.hidden) return;
+        imagePreview.hidden = false
+    }
+</script>
 </html>

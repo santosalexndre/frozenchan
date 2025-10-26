@@ -1,11 +1,16 @@
 import { Request, Response } from 'express';
 import { prisma } from '../infra/prisma';
-import { Thread } from '../models/thread.model';
-import { Post, UserImage } from '../models/post.model';
-import { error } from 'console';
-import { threadCpuUsage } from 'process';
-import { URLSearchParamsIterator } from 'url';
-import fs from 'fs/promises';
+import userUploadService from '../services/user-upload.service';
+import { Board } from '../models/board.model';
+import {
+    createPost,
+    createThread,
+    getBoardList,
+    getPage,
+    getThread,
+} from '../services/board-service';
+import { formatDate } from '../misc/presentation';
+import { Post } from '../models/post.model';
 
 interface RequestParams {
     board: string;
@@ -14,172 +19,170 @@ interface ResponseBody {}
 interface RequestBody {}
 interface RequestQuery {}
 
+const mapper = (p: Post) => {
+    const path = p.file?.path.replace(/(\.[^.]*)$/, 's.webp') || '';
+
+    let fileInfo = '';
+    let fileSize = '';
+    if (p.file) {
+        const f = p.file;
+        const kbs = (p.file.size || 0) / 1024;
+        fileSize = `${kbs.toFixed(1)} KB`;
+        if (kbs > 1024) {
+            const mbs = kbs / 1024;
+            fileSize = `${mbs.toFixed(1)} MB`;
+        }
+
+        fileInfo = `(${f.width}x${f.height}, ${fileSize})`;
+    }
+
+    let fileName = undefined;
+    if (p.file) {
+        const name = p.file!.name + '.' + p.file!.extension;
+        const dotIndex = name.lastIndexOf('.');
+        const fname = name.slice(0, dotIndex);
+        const ext = name.slice(dotIndex);
+        if (fname.length >= 64) {
+            fileName = fname.slice(0, 64) + '(...)' + ext;
+        } else {
+            fileName = name;
+        }
+    }
+
+    return {
+        id: p.id,
+        ip: p.ipAddress,
+        comment: p.comment,
+        name: p.name,
+        thumbnailPath: path,
+        date: formatDate(p.timestamp),
+        fileInfo,
+        fileName,
+        file: p.file,
+    };
+};
 export const BoardController = {
     async getBoard(req: Request<RequestParams>, res: Response) {
-        const dir = req.params.board;
+        try {
+            const directory = req.params.board;
+            const board = await getPage(directory, 0);
+            const boardList = await getBoardList();
 
-        const boardList = await prisma.board.findMany();
+            const boardName = board.name;
 
-        const board = await prisma.board.findUnique({
-            where: { dir },
-            include: {
-                Thread: {
-                    orderBy: { updatedAt: 'desc' },
-                    include: { Post: { take: 5 } },
+            const threads = board.threads.map((t) => ({
+                ...t,
+                op: mapper(t.op),
+                posts: t.posts.map(mapper),
+            }));
+
+            return res.render('layout', {
+                page: 'board',
+                boardList,
+                boardName,
+                directory,
+                opts: {
+                    threads,
                 },
-            },
-        });
-
-        if (!board) return res.json({ error: 'nao achei ' });
-
-        return res.render('layout', {
-            page: 'board',
-            boardList,
-            opts: { board, threads: board.Thread },
-        });
+            });
+        } catch (e) {
+            console.log(e);
+            res.redirect('/');
+        }
     },
 
     async createThread(req: Request, res: Response) {
-        console.log(req.body);
-        const { subject, name, comment } = req.body;
+        try {
+            const board = req.params.board;
+            if (!board) throw new Error('Board not found');
+            const { subject, name, comment } = req.body;
 
-        let file: UserImage | undefined;
-        console.log(req.file);
-        if (req.file) {
-            const f = req.file;
-            const name = req.file.filename.split('.');
-            file = {
-                ext: name.pop() || '',
-                name: name.join(),
-                height: 800,
-                width: 600,
-                size: f.size,
-            };
-            // const upload = await fs.writeFile(req.file.buffer, );
+            if (!comment || comment.length <= 0) {
+                throw new Error('A comment is required');
+            }
+
+            const file = req.file
+                ? await userUploadService.saveFile(board, req.file, true)
+                : undefined;
+
+            const thread = await createThread(
+                board,
+                comment,
+                subject,
+                name,
+                file,
+            );
+
+            res.redirect(`/${board}/`);
+        } catch (e) {
+            console.log(e);
+            res.redirect('/');
         }
-
-        console.log(file);
-        const thread = await Thread.create('g', subject);
-
-        const post = await Post.create({
-            boardDir: 'g',
-            comment,
-            name,
-            threadId: thread.id,
-            file,
-        });
-
-        res.redirect('/g/');
     },
 
     async getThread(req: Request, res: Response) {
-        const dir = req.params.board;
-
-        const boardList = await prisma.board.findMany();
-
         const id = req.params.thread;
-
         if (!id) throw new Error('Not Found');
 
-        const fp = await prisma.post.findUnique({
-            where: { id: Number(id) },
-            include: { thread: { include: { Post: true } }, board: true },
-        });
+        const t = await getThread(Number(id));
+        const thread = {
+            ...t,
+            op: mapper(t.op),
+            posts: t.posts.map((p) => mapper(p)),
+        };
 
-        if (!fp) throw new Error('Not Found');
-
-        const thread = fp.thread;
-
-        const board = fp.board;
-
-        const threadFp = thread.Post[0]?.id || -1;
-
-        if (fp.id !== threadFp) {
-            res.send(404);
-            res.end();
-            return;
-        }
+        const board = Board.formatFromDb(
+            await prisma.board.findUnique({ where: { dir: req.params.board } }),
+        );
 
         return res.render('layout', {
             page: 'thread',
-            boardList,
-            opts: { threadId: thread.id, board, thread, posts: thread.Post },
+            boardList: await getBoardList(),
+            boardName: board.name,
+            directory: board.directory,
+            opts: {
+                thread,
+            },
         });
     },
 
     async createPost(req: Request, res: Response) {
-        // cria post ou thread
-        const dir = req.params.board;
-        if (!dir) {
+        console.log('CRIANO POST');
+        const board = req.params.board;
+        if (!board) {
             res.send(500);
             throw new Error('What??');
         }
-
         const threadId = req.params.thread;
         if (!threadId) {
             throw new Error('What');
         }
-
         const { name, comment } = req.body;
 
-        let file: UserImage | undefined;
-        console.log(req.file);
-        if (req.file) {
-            const f = req.file;
-            const name = req.file.filename.split('.');
-            file = {
-                ext: name.pop() || '',
-                name: name.join(),
-                height: 800,
-                width: 600,
-                size: f.size,
-            };
-            // const upload = await fs.writeFile(req.file.buffer, );
-        }
+        const file = req.file
+            ? await userUploadService.saveFile(board, req.file, false)
+            : undefined;
 
-        const post = await prisma.post.create({
-            data: {
-                ip: '192.168.0.1',
-                boardDir: dir,
-                threadId: Number(threadId),
-                comment,
-                name,
-                timestamp: new Date(),
-                fileheight: file?.height,
-                filewidth: file?.width,
-                fileName: file?.name,
-                filetype: file?.ext,
-                filesize: file?.size,
-                filePath: 'data/uploads/' + file?.name + file?.ext || '',
-            },
-            include: {
-                thread: {
-                    include: {
-                        _count: { select: { Post: true } },
-                        Post: {
-                            take: 1,
-                            select: { id: true },
-                            orderBy: { id: 'asc' },
-                        },
-                    },
-                },
-            },
+        const post = await createPost({
+            board,
+            comment,
+            name,
+            threadId: Number(threadId),
+            file,
         });
+
         // bumpa a thread do post
-        await prisma.thread.update({
+        const thread = await prisma.thread.update({
             where: { id: Number(threadId) },
             data: { updatedAt: new Date() },
+            include: { _count: { select: { Post: true } } },
         });
         // deleta a thread em ulitmo lugar
-        if (post.thread._count.Post > 250) {
+        if (thread._count.Post > 250) {
             await prisma.thread.delete({ where: { id: Number(threadId) } });
         }
-
-        console.log('dir: ', dir);
-
-        // res.end();
-        const fp = post.thread.Post[0]?.id;
-        const teste = `/${dir}/thread/${fp}`;
+        const fp = thread.firstPostId;
+        const teste = `/${board}/thread/${fp}`;
         res.redirect(teste);
     },
 };

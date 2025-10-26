@@ -5,6 +5,6 @@
     [ <a href="/g/catalog">Archive</a> ]
 </div>
 <hr>
-<% for (let thread of threads) { %>
-    <%- include('fragments/thread-preview', { thread, posts: thread.Post }); %>
+<% for (let thread of opts.threads) { %>
+    <%- include('fragments/thread-preview', thread); %>
 <% } %>

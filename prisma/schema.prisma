@@ -27,35 +27,39 @@ model Board {
 }
 
 model Thread {
-  id        Int      @id @default(autoincrement())
-  board     Board    @relation(fields: [boardDir], references: [dir])
-  boardDir  String
-  subject   String
-  sticky    Boolean  @default(false)
-  lock      Boolean  @default(false)
-  archive   Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  Post      Post[]
+  id          Int      @id @default(autoincrement())
+  firstPostId Int?     @unique
+  firstPost   Post?    @relation("FirstPost", fields: [firstPostId], references: [id])
+  board       Board    @relation(fields: [boardDir], references: [dir])
+  boardDir    String
+  subject     String
+  sticky      Boolean  @default(false)
+  lock        Boolean  @default(false)
+  archive     Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  Post Post[]
 }
 
 model Post {
-  id          Int      @id @default(autoincrement())
-  thread      Thread   @relation(fields: [threadId], references: [id])
-  threadId    Int
-  board       Board    @relation(fields: [boardDir], references: [dir])
-  boardDir    String
-  timestamp   DateTime @default(now())
-  ip          String
-  comment     String?
-  name        String?
-  trip        String?
-  fileName    String?
-  filePath    String?
-  filemd5     String?
-  filesize    Int?
-  filewidth   Int?
-  filetype    String?
-  fileheight  Int?
-  filespoiler Boolean  @default(false)
+  id            Int      @id @default(autoincrement())
+  threadId      Int
+  thread        Thread   @relation(fields: [threadId], references: [id])
+  board         Board    @relation(fields: [boardDir], references: [dir])
+  boardDir      String
+  timestamp     DateTime @default(now())
+  ip            String
+  comment       String?
+  name          String?
+  trip          String?
+  fileName      String?
+  filePath      String?
+  filemd5       String?
+  filesize      Int?
+  filewidth     Int?
+  fileheight    Int?
+  filetype      String?
+  filespoiler   Boolean  @default(false)
+  firstOfThread Thread?  @relation("FirstPost")
 }

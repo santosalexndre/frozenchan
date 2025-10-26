@@ -1,15 +1,14 @@
 import { prisma } from '../infra/prisma';
+import { Board } from './board.model';
+import { Post } from './post.model';
 
 export class Thread {
-    private constructor(
+    constructor(
         public id: number,
         public boardDir: string,
         public subject: string,
+        public postCount: number,
+        public op: Post,
+        public posts: Post[],
     ) {}
-
-    public static async get() {}
-    public static async create(boardDir: string, subject: string) {
-        const thread = prisma.thread.create({ data: { subject, boardDir } });
-        return thread;
-    }
 }

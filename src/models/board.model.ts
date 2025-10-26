@@ -1,19 +1,18 @@
 import { prisma } from '../infra/prisma';
+import { Thread } from './thread.model';
 
 export class Board {
-    private constructor(
+    constructor(
         public directory: string,
         public name: string,
         public archive: boolean,
         public postLimit: number,
         public threadsPerPage: number,
         public totalPages: number,
+        public threads: Thread[],
     ) {}
 
-    public static async get(dir: string): Promise<Board> {
-        const board = await prisma.board.findUnique({ where: { dir } });
-        if (!board) throw new Error(`Board: ${dir} Not Found`);
-
+    public static formatFromDb(board: any) {
         return new Board(
             board.dir,
             board.name,
@@ -21,6 +20,7 @@ export class Board {
             board.postLimite,
             board.threadsPerPage,
             board.pages,
+            board.threads,
         );
     }
 }

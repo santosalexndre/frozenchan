@@ -1,31 +1,32 @@
-<% { let op = posts[0] %>
 <div class="thread-container">
     <div class="op">
-        <% if (op.fileName) { %> 
+        <% if (op.file) { let f = op.file; %> 
         <div class="post-file">
             File: 
-            <a href="/<%=board.dir%>/<%= op.fileName %>.<%=op.filetype%>"><%= op.fileName %>.<%= op.filetype %></a> (<%= op.filewidth%>x<%=op.fileheight%>, 16Kb)
+            <a href="/<%=f.path%>"><%= op.fileName %></a> <%= op.fileInfo %>
         </div>
         <div class="post-image">
-            <% if (op.filetype.startsWith('mp4')) { %>
-                <video src="/<%=board.dir%>/<%= op.fileName %>.<%=op.filetype%>" alt="op-image">
+            <% if (f.fileType === 'video') { %>
+                <video src="/<%=directory%>/<%=fileName%>" alt="op-image">
             <% } else { %>
-                <img src="/<%=board.dir%>/<%= op.fileName %>.<%=op.filetype%>" alt="op-image">
+                <img  src="/<%= op.thumbnailPath %>" alt="op-image">
             <% } %>
         </div>
         <% } %>
         <div class="post-info">
-            <span class="post-subject"><%= thread.subject %></span>
+            <span class="post-subject"><%= subject %></span>
             <span class="post-name"><%= op.name || "Anão" %></span>
-            <span class="post-time">(<%= op.timestamp %>)</span>
+            <span class="post-time"><%= op.date %></span>
             <span class="post-number">No.<%= op.id %></span>
-            [ <span><a href="/<%=board.dir%>/thread/<%=op.id%>/#">Reply</a></span> ]
+            [ <span><a href="/<%=directory%>/thread/<%=op.id%>/#">Reply</a></span> ]
         </div>
         <div class="post-comment"><%= op.comment %></div>
     </div>
+    <% let hidden = postCount - 5; if (hidden > 0) { %>
+        <span><%= hidden %> hidden post<%= (hidden > 1 ? 's' : '') %>  (<a href="/<%=directory%>/thread/<%=op.id%>/#">show</a>)</span>
+    <% } %>
     <% for (let i = 1; i < posts.length; i++) { let comment = posts[i]; %>
-        <%- include('comment', { comment }); %>
+        <%- include('comment', comment ); %>
     <% } %>
 </div>
 <hr>
-<% } %>

@@ -1,24 +1,18 @@
 <div class="comment">
     <div class="post-info">
-        <span class="post-name"><%= comment.name || "Anão" %></span>
-        <span class="post-time">(<%= comment.timestamp %>)</span>
-        <span class="post-number">No.<%= comment.id %></span>
+        <span class="post-name"><%= name || "Anão" %></span>
+        <span class="post-time"><%= date %></span>
+        <span class="post-number">No.<%= id %></span>
         [ <span><a href="/reply">Reply</a></span> ]
     </div>
-    <% if (comment.fileName) { %>
+    <% if (file ) { %>
         <div class="post-file">
             File:
-            <a href="/<%=board.dir%>/<%= comment.fileName%>.<%= comment.filetype %>"><%= comment.fileName %>.<%=comment.filetype%></a> (<%=comment.filewidth%>x<%=comment.fileheight%>, <%=comment.filesize/(1024)%>Kb)
+            <a href="/<%= file.path %>"><%= fileName %></a> <%= fileInfo %>
         </div>
     <div class="post-image">
-        <% if (comment.filetype.startsWith('mp4')) { %>
-        <video src="/<%=board.dir%>/<%= comment.fileName%>.<%= comment.filetype %>" controls>
-        <% } else { %>
-        <img src="/<%=board.dir%>/<%= comment.fileName%>.<%= comment.filetype %>" alt="">
-
-        <% } %>
-
+        <img src="/<%= thumbnailPath %>" alt="">
     </div>
     <% } %>
-    <div class="post-comment"><%= comment.comment %></div>
+    <div class="post-comment"><%= comment %></div>
 </div>

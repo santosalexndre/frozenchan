@@ -1,22 +1,19 @@
 import { prisma } from '../infra/prisma';
-
-export interface UserImage {
-    width: number;
-    height: number;
-    ext: string;
-    name: string;
-    size: number;
-}
+import {
+    AcceptableFormats,
+    UserUpload,
+} from '../middlwares/file-upload.middleware';
 
 export interface PostDTO {
     threadId: number;
-    boardDir: string;
+    board: string;
     comment: string;
     name?: string;
-    file?: UserImage;
+    file?: UserUpload;
+    thread?: any;
 }
 export class Post {
-    private constructor(
+    constructor(
         public id: number,
         public threadId: number,
         public boardDir: string,
@@ -24,35 +21,38 @@ export class Post {
         public timestamp: Date,
         public ipAddress: string,
         public name?: string,
-        public file?: UserImage,
+        public file?: UserUpload,
     ) {}
+
+    public static formatFromDb(post: any): Post {
+        let file: UserUpload | undefined = undefined;
+
+        if (post.fileName) {
+            file = {
+                fileType: (post.filetype || 'image') as AcceptableFormats,
+                extension: post.filetype || '',
+                height: post.fileheight || 0,
+                width: post.filewidth || 0,
+                name: post.fileName,
+                path: post.filePath || '',
+                size: post.filesize,
+            };
+        }
+
+        const ext = post.fileName?.split('');
+        return new Post(
+            post.id,
+            post.threadId,
+            post.boardDir,
+            post.comment || '',
+            post.timestamp,
+            post.ip,
+            post.name || '',
+            file,
+        );
+    }
 
     public static async get(id: number) {}
 
-    public static async create(postDto: PostDTO) {
-        try {
-            const post = await prisma.post.create({
-                data: {
-                    ip: '192.168.0.1',
-                    boardDir: postDto.boardDir,
-                    comment: postDto.comment,
-                    threadId: postDto.threadId,
-                    name: postDto.name,
-                    timestamp: new Date(),
-                    filewidth: postDto.file?.width,
-                    fileheight: postDto.file?.height,
-                    fileName: postDto.file?.name,
-                    filetype: postDto.file?.ext,
-                    filePath:
-                        'data/uploads/' +
-                        postDto.file?.name +
-                        (postDto.file?.ext || ''),
-                },
-            });
-            return post;
-        } catch (e) {
-            console.log(e);
-            throw new Error('Something went wrong i guess');
-        }
-    }
+    public static async create(postDto: PostDTO) {}
 }
