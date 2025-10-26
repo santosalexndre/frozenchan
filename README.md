@@ -3,6 +3,7 @@
 
 # Planned features:
 - [x] Creating small thumbnails for faster page loading
+- [ ] Hashing files to save storage space for non-unique files
 - [ ] Catalog page
 - [ ] Admin Panel
 - [ ] Trip codes
