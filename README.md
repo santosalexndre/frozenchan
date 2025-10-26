@@ -14,7 +14,6 @@
   - [ ] Go-back button
   - [ ] Hide thread button
   - [ ] Report button
-
-* Code improvements:
-- [ ] npm scripts to seed and run the project
-- [ ] docker
+- [ ] Code improvements:
+  - [ ] npm scripts to seed and run the project
+  - [ ] docker
