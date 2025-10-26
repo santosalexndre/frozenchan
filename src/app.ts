@@ -2,7 +2,7 @@ import express from 'express';
 import path from 'path';
 import cors from 'cors';
 import { boardRouter } from './routes/boards.route';
-import { prisma } from './infra/prisma';
+import { prisma } from './misc/prisma';
 
 const port = process.env.PORT || 3000;
 

@@ -1,4 +1,4 @@
-import { prisma } from '../infra/prisma';
+import { prisma } from '../misc/prisma';
 import { Board } from './board.model';
 import { Post } from './post.model';
 

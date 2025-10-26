@@ -1,4 +1,4 @@
-import { prisma } from '../infra/prisma';
+import { prisma } from '../misc/prisma';
 import { Thread } from './thread.model';
 
 export class Board {

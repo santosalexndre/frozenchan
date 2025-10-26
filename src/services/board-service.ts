@@ -1,4 +1,4 @@
-import { prisma } from '../infra/prisma';
+import { prisma } from '../misc/prisma';
 import { UserUpload } from '../middlwares/file-upload.middleware';
 import { Board } from '../models/board.model';
 import { Post, PostDTO } from '../models/post.model';

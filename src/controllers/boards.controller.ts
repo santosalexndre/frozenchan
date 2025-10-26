@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { prisma } from '../infra/prisma';
+import { prisma } from '../misc/prisma';
 import userUploadService from '../services/user-upload.service';
 import { Board } from '../models/board.model';
 import {
