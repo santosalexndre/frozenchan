@@ -9,3 +9,9 @@
 - [ ] Trip codes
 - [ ] Handling video files and creating thumbnails
 - [ ] Scripts for running the program and seeding the database
+- [ ] Report thread
+- [ ] Front end improvements:
+  - [ ] Paging
+  - [ ] Go-back button
+  - [ ] Hide thread button
+  - [ ] Report button
