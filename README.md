@@ -1,5 +1,5 @@
 # A simple 4chan clone made with expressjs and typescript
-<img width="1033" height="913" alt="image" src="https://github.com/user-attachments/assets/eb96d7bd-4560-477d-afd9-ce16c28ab190" />
+<img width="1370" height="952" alt="image" src="https://github.com/user-attachments/assets/3ae28604-4b23-4c7a-9b64-a5b418cb4881" />
 
 # Missing features:
 - [ ] Trip codes
